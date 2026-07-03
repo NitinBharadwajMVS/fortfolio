@@ -556,6 +556,203 @@ export function SectionPanel({ sectionId, onClose }: SectionPanelProps) {
     )
   }
 
+  if (sectionId === 'skills') {
+    return (
+      <div 
+        className="section-panel-backdrop" 
+        onClick={handleClose} 
+        role="presentation" 
+        style={{ 
+          zIndex: 9999, 
+          background: 'rgba(0,0,0,0.3)',
+          backdropFilter: 'blur(4px)',
+          animation: isClosing ? 'backdropClose 200ms ease-out forwards' : 'backdropOpen 300ms ease-out forwards'
+        }}
+      >
+        <style>{`
+          .landmark-label, .hud, .minimap-widget, .toast-stack, .fallback-nav, .compass {
+            display: none !important;
+          }
+          .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+          .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); border-radius: 4px; }
+          .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(142, 127, 101, 0.8); border-radius: 4px; }
+          
+          .inventory-item {
+            transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+            cursor: pointer;
+            position: relative;
+          }
+          .inventory-item:hover {
+            transform: translateY(-4px);
+          }
+          .inventory-item.legendary:hover { box-shadow: 0 8px 16px rgba(209, 123, 73, 0.4), inset 0 0 10px rgba(255,255,255,0.2); }
+          .inventory-item.epic:hover { box-shadow: 0 8px 16px rgba(154, 123, 156, 0.4), inset 0 0 10px rgba(255,255,255,0.2); }
+          .inventory-item.rare:hover { box-shadow: 0 8px 16px rgba(99, 135, 166, 0.4), inset 0 0 10px rgba(255,255,255,0.2); }
+          .inventory-item.common:hover { box-shadow: 0 8px 16px rgba(132, 145, 98, 0.4), inset 0 0 10px rgba(255,255,255,0.2); }
+          
+          @keyframes inventoryOpen {
+            0% { opacity: 0; transform: scale(0.92); }
+            70% { opacity: 1; transform: scale(1.02); }
+            100% { opacity: 1; transform: scale(1); }
+          }
+          @keyframes inventoryClose {
+            0% { opacity: 1; transform: scale(1); }
+            30% { opacity: 1; transform: scale(0.97); }
+            100% { opacity: 0; transform: scale(0.92); }
+          }
+          @keyframes backdropOpen { from { opacity: 0; } to { opacity: 1; } }
+          @keyframes backdropClose { from { opacity: 1; } to { opacity: 0; } }
+        `}</style>
+        
+        <div
+          className="section-panel custom-scrollbar"
+          onClick={(e) => e.stopPropagation()}
+          role="dialog"
+          aria-modal="true"
+          style={{ 
+            width: 'min(90vw, 850px)',
+            maxHeight: '90vh',
+            overflowY: 'auto',
+            background: 'rgba(228, 213, 183, 0.94)',
+            backdropFilter: 'blur(8px)',
+            border: '4px solid rgba(107, 92, 70, 0.95)',
+            borderRadius: '12px',
+            boxShadow: '0 0 0 4px rgba(65, 53, 37, 0.8), 0 10px 30px rgba(0,0,0,0.25), inset 0 0 40px rgba(139,115,85,0.1)',
+            color: '#2a2218',
+            padding: 0,
+            position: 'relative',
+            animation: isClosing ? 'inventoryClose 200ms ease-out forwards' : 'inventoryOpen 300ms cubic-bezier(0.25, 0.8, 0.25, 1) forwards'
+          }}
+        >
+          {/* Header */}
+          <div style={{ 
+            background: 'rgba(108, 122, 74, 0.95)',
+            padding: '1.25rem 1.5rem',
+            borderBottom: '5px solid rgba(74, 84, 50, 0.9)',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'flex-start',
+            position: 'relative',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+          }}>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <span style={{ fontFamily: 'Bungee, cursive', fontSize: '0.9rem', color: '#3d4725', letterSpacing: '2px', textShadow: '1px 1px 0 rgba(255,255,255,0.2)' }}>INVENTORY</span>
+              <h2 style={{ fontFamily: 'Bungee, cursive', fontSize: '2rem', margin: 0, color: '#f5ead2', textShadow: '2px 2px 0 #3d4725', letterSpacing: '1px', lineHeight: 1 }}>LOADOUT</h2>
+            </div>
+            
+            <button type="button" onClick={handleClose} aria-label="Close" style={{
+              background: 'rgba(65, 53, 37, 0.9)',
+              border: '3px solid rgba(42, 34, 24, 0.9)',
+              borderRadius: '50%',
+              width: '40px',
+              height: '40px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#d4c5a9',
+              fontSize: '1.3rem',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              boxShadow: '0 4px 0 rgba(42, 34, 24, 0.9)'
+            }}>✕</button>
+          </div>
+
+          <div style={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
+            
+            {/* Rarities Grid */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2.5rem' }}>
+              
+              {/* LEGENDARY */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', borderBottom: '2px solid rgba(209, 123, 73, 0.4)', paddingBottom: '0.5rem' }}>
+                  <div style={{ width: '16px', height: '16px', background: '#d17b49', borderRadius: '4px', boxShadow: '0 0 10px rgba(209,123,73,0.4)' }}></div>
+                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <h3 style={{ margin: 0, fontFamily: 'Bungee, cursive', fontSize: '1.1rem', color: '#a85b30', letterSpacing: '1px' }}>LEGENDARY LOADOUT</h3>
+                    <span style={{ fontSize: '0.7rem', fontWeight: 800, color: '#4a3d2c', textTransform: 'uppercase' }}>Machine Learning</span>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                  {['LLMs', 'RAG', 'Neural Networks', 'Scikit-Learn', 'PyTorch', 'TensorFlow', 'Pandas'].map(skill => (
+                    <div key={skill} className="inventory-item legendary" style={{ background: '#d17b49', border: '2px solid #b35d2d', padding: '0.4rem 0.75rem', borderRadius: '4px', color: '#fff', fontFamily: 'Bungee, cursive', fontSize: '0.75rem', textShadow: '1px 1px 0 rgba(0,0,0,0.3)', boxShadow: 'inset 0 2px 4px rgba(255,255,255,0.2), 0 2px 4px rgba(0,0,0,0.15)' }}>
+                      {skill}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* EPIC */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', borderBottom: '2px solid rgba(154, 123, 156, 0.4)', paddingBottom: '0.5rem' }}>
+                  <div style={{ width: '16px', height: '16px', background: '#9a7b9c', borderRadius: '4px', boxShadow: '0 0 10px rgba(154,123,156,0.4)' }}></div>
+                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <h3 style={{ margin: 0, fontFamily: 'Bungee, cursive', fontSize: '1.1rem', color: '#795c7a', letterSpacing: '1px' }}>EPIC LOADOUT</h3>
+                    <span style={{ fontSize: '0.7rem', fontWeight: 800, color: '#4a3d2c', textTransform: 'uppercase' }}>Backend & Architecture</span>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                  {['FastAPI', 'Node.js', 'REST APIs', 'Apache Kafka', 'Supabase'].map(skill => (
+                    <div key={skill} className="inventory-item epic" style={{ background: '#9a7b9c', border: '2px solid #795c7a', padding: '0.4rem 0.75rem', borderRadius: '4px', color: '#fff', fontFamily: 'Bungee, cursive', fontSize: '0.75rem', textShadow: '1px 1px 0 rgba(0,0,0,0.3)', boxShadow: 'inset 0 2px 4px rgba(255,255,255,0.2), 0 2px 4px rgba(0,0,0,0.15)' }}>
+                      {skill}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* RARE */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', borderBottom: '2px solid rgba(99, 135, 166, 0.4)', paddingBottom: '0.5rem' }}>
+                  <div style={{ width: '16px', height: '16px', background: '#6387a6', borderRadius: '4px', boxShadow: '0 0 10px rgba(99,135,166,0.4)' }}></div>
+                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <h3 style={{ margin: 0, fontFamily: 'Bungee, cursive', fontSize: '1.1rem', color: '#4a6882', letterSpacing: '1px' }}>RARE LOADOUT</h3>
+                    <span style={{ fontSize: '0.7rem', fontWeight: 800, color: '#4a3d2c', textTransform: 'uppercase' }}>Frontend & Creative</span>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                  {['React', 'Next.js', 'TypeScript', 'Three.js', 'Unity 2D', 'Blender', 'Canva'].map(skill => (
+                    <div key={skill} className="inventory-item rare" style={{ background: '#6387a6', border: '2px solid #4a6882', padding: '0.4rem 0.75rem', borderRadius: '4px', color: '#fff', fontFamily: 'Bungee, cursive', fontSize: '0.75rem', textShadow: '1px 1px 0 rgba(0,0,0,0.3)', boxShadow: 'inset 0 2px 4px rgba(255,255,255,0.2), 0 2px 4px rgba(0,0,0,0.15)' }}>
+                      {skill}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* COMMON */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', borderBottom: '2px solid rgba(132, 145, 98, 0.4)', paddingBottom: '0.5rem' }}>
+                  <div style={{ width: '16px', height: '16px', background: '#849162', borderRadius: '4px', boxShadow: '0 0 10px rgba(132,145,98,0.4)' }}></div>
+                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <h3 style={{ margin: 0, fontFamily: 'Bungee, cursive', fontSize: '1.1rem', color: '#5d6941', letterSpacing: '1px' }}>CORE ESSENTIALS</h3>
+                    <span style={{ fontSize: '0.7rem', fontWeight: 800, color: '#4a3d2c', textTransform: 'uppercase' }}>Programming & Tools</span>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                  {['Python', 'Java', 'C++', 'SQL', 'Git', 'Linux', 'Visual Studio Code', 'Antigravity'].map(skill => (
+                    <div key={skill} className="inventory-item common" style={{ background: '#849162', border: '2px solid #657345', padding: '0.4rem 0.75rem', borderRadius: '4px', color: '#fff', fontFamily: 'Bungee, cursive', fontSize: '0.75rem', textShadow: '1px 1px 0 rgba(0,0,0,0.3)', boxShadow: 'inset 0 2px 4px rgba(255,255,255,0.2), 0 2px 4px rgba(0,0,0,0.15)' }}>
+                      {skill}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+            </div>
+
+            {/* Ending Section */}
+            <div style={{ background: 'rgba(85, 97, 62, 0.95)', border: '3px solid rgba(60, 69, 44, 0.9)', borderRadius: '6px', padding: '1.25rem 1.5rem', display: 'flex', gap: '1.25rem', alignItems: 'center', marginTop: '0.5rem', boxShadow: 'inset 0 2px 4px rgba(255,255,255,0.1), 0 4px 8px rgba(0,0,0,0.2)' }}>
+              <div style={{ width: '40px', height: '40px', background: 'transparent', border: '3px solid #f5ead2', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: '0 2px 4px rgba(0,0,0,0.2)' }}>
+                <span style={{ color: '#f5ead2', fontSize: '1.5rem', fontWeight: 'bold', textShadow: '0 2px 4px rgba(0,0,0,0.2)' }}>✓</span>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
+                <h4 style={{ margin: 0, fontFamily: 'Bungee, cursive', fontSize: '1.1rem', color: '#f5ead2', textShadow: '1px 1px 0 #2b331d', letterSpacing: '1px' }}>LOADOUT EQUIPPED</h4>
+                <p style={{ margin: 0, fontSize: '0.9rem', color: '#d5dfc3', fontWeight: 700 }}>You've seen what I build with.<br/>→ Head straight to Extraction Point.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="section-panel-backdrop" onClick={onClose} role="presentation">
       <div
