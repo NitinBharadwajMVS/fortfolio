@@ -1,0 +1,41 @@
+# TINTIN Portfolio — project requirements
+#
+# This is a Node.js / TypeScript app (React + Three.js), not a Python project.
+# Install application dependencies with:
+#
+#   npm install
+#
+# Run the dev server:
+#
+#   npm run dev
+#
+# ---------------------------------------------------------------------------
+# System prerequisites
+# ---------------------------------------------------------------------------
+# Node.js 18+ (20 LTS recommended)
+# npm 9+ (bundled with Node)
+# A modern browser with WebGL support
+#
+# ---------------------------------------------------------------------------
+# Runtime dependencies (managed in package.json)
+# ---------------------------------------------------------------------------
+# @react-three/drei ^10.0.6
+# @react-three/fiber ^9.1.2
+# @react-three/postprocessing ^3.0.4
+# nipplejs ^0.10.2
+# react ^19.1.0
+# react-dom ^19.1.0
+# three ^0.175.0
+# zustand ^5.0.3
+#
+# ---------------------------------------------------------------------------
+# Dev dependencies (package.json → devDependencies)
+# ---------------------------------------------------------------------------
+# @types/react ^19.1.2
+# @types/react-dom ^19.1.2
+# @types/three ^0.175.0
+# @vitejs/plugin-react ^4.4.1
+# typescript ~5.8.3
+# vite ^6.3.5
+#
+# Exact locked versions: see package-lock.json
